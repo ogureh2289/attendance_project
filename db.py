@@ -2,15 +2,17 @@ import sqlite3
 
 DB_NAME = 'school.db'
 
+
 def connect():
     conn = sqlite3.connect(DB_NAME)
     return conn
+
 
 def init_db():
     conn = connect()
     cursor = conn.cursor()
     cursor.execute(
-    '''
+        '''
     CREATE TABLE IF NOT EXISTS students(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         full_name TEXT NOT NULL,
@@ -21,7 +23,7 @@ def init_db():
     '''
     )
     cursor.execute(
-    '''
+        '''
     CREATE TABLE IF NOT EXISTS attendance(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         lesson_name TEXT NOT NULL,
@@ -37,25 +39,28 @@ def init_db():
     conn.commit()
     conn.close()
 
-def add_student(full_name, student_class,  email, qr_token):
-        conn = connect()
-        cursor = conn.cursor()
-        cursor.execute('''
+
+def add_student(full_name, student_class, email, qr_token):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute('''
         INSERT INTO students (full_name, class, email, qr_token)
         VALUES (?, ?, ?, ?)
-        ''', (full_name,  student_class, email, qr_token))
-        conn.commit()
-        conn.close()
+        ''', (full_name, student_class, email, qr_token))
+    conn.commit()
+    conn.close()
 
-def record_attendance(lesson_name, student_id, student_class, lesson_start, arrival_time,status):
-        conn = connect()
-        cursor = conn.cursor()
-        cursor.execute('''
-        INSERT INTO attendance (lesson_name, student_id, class, lesson_start, arrival_time, status)
+
+def record_attendance(lesson_name, student_id, student_class, lesson_start, arrival_time, status):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO attendance (lesson_name, student_id, student_class, lesson_start, arrival_time, status)
         VALUES (?, ?, ?, ?, ?, ?)
          ''', (lesson_name, student_id, student_class, lesson_start, arrival_time, status))
-        conn.commit()
-        conn.close()
+    conn.commit()
+    conn.close()
+
 
 def get_student_by_token(qr_token):
     conn = connect()
@@ -66,4 +71,3 @@ def get_student_by_token(qr_token):
     result = cursor.fetchone()
     conn.close()
     return result
-
