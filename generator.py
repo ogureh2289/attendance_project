@@ -16,7 +16,6 @@ def create_qr_code(token):
     img = qr.make_image(fill_color="black", back_color="white")
     # Сохраним QR в байтах, чтобы потом вложить в письмо
     bio = BytesIO()
-    img.save("qr.png")
     img.save(bio)
     bio.seek(0)
     return bio
