@@ -73,16 +73,32 @@ def get_student_by_token(qr_token):
     conn.close()
     return result
 
-def get_attedance():
-    conn=connect()
-    cursor=conn.cursor()
-    cursor.execute("SELECT * FROM students")
+def get_attendance(date, student_class):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute('''
+            SELECT 
+                a.id, 
+                s.full_name, 
+                a.class, 
+                a.lesson_name, 
+                a.lesson_date, 
+                a.lesson_start, 
+                a.arrival_time, 
+                a.status
+            FROM attendance a
+            JOIN students s ON a.student_id = s.id
+            WHERE a.lesson_date = ? AND a.class = ?
+        ''', (date, student_class))
     result = cursor.fetchall()
     conn.close()
     return result
 
-student = get_student_by_token('436d6087-d986-4637-bae7-3fa3849cf1ee')
-record_attendance("Математика", "23.05.2025", student[0], student[2], '8:30', '8:45', "опоздал")
-
-
+def get_all_students_by_class(s_class):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, full_name, class, qr_token FROM students WHERE class = ?", (s_class,))
+    students = cursor.fetchall()
+    conn.close()
+    return students
 
